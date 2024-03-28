@@ -1,8 +1,15 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, FlatList } from 'react-native';
 import { MEAL_FILTERS } from '../Data';
+import axios from 'axios';
+
+
+
 
 const Home = () => {
+  const getTrendyRecipes =()=>{
+    axios.get('')
+  }
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
@@ -19,14 +26,15 @@ const Home = () => {
       </View>
       <Text style={styles.heading}>Categories</Text>
       <FlatList 
-        horizontal 
+        horizontal
+        showsHorizontalScrollIndicator ={false} 
         data={MEAL_FILTERS} 
         renderItem={({ item, index }) => (
-          <TouchableOpacity style={styles.categoriesItems}>
+          <TouchableOpacity activeOpacity={.8} style={styles.categoriesItems}>
             <View style={styles.card}>
               <Image source={item.icon} style={styles.icon}/>
             </View>
-            <Text>{item.title}</Text>
+            <Text style={styles.title}>{item.title}</Text>
           </TouchableOpacity>
         )}
       />
@@ -97,10 +105,13 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   categoriesItems: {
-    height: 150,
-    width: 150,
+    height: 120,
+    width: 120,
     marginLeft:10,
-    marginTop:10
+    marginTop:10,
+    alignItems:'center',
+    justifyContent:"center",
+    alignContent:"center"
   },
   card: {
     height: '70%',
@@ -112,11 +123,21 @@ const styles = StyleSheet.create({
     backgroundColor:'white',
     justifyContent:'center',
     alignItems:'center',
-    margin:10
+    margin:10,
+    borderRadius:10
   },
   icon:{
     width:'50%',
-    height:'50%'
+    height:'50%',
+    tintColor:'#05b681'
+  },
+  title:{
+    fontSize:17,
+    alignSelf:'center',
+    margin:4,
+    fontWeight:'500',
+    color:'#000'
+    
   }
 });
 
