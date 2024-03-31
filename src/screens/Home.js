@@ -1,43 +1,109 @@
-import React from 'react';
-import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, FlatList } from 'react-native';
-import { MEAL_FILTERS } from '../Data';
+import React, {useEffect, useState} from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  StatusBar,
+  TouchableOpacity,
+  FlatList,
+} from 'react-native';
+import {MEAL_FILTERS} from '../Data';
 import axios from 'axios';
-
-
-
+import {APP_ID, APP_KEY} from '../Keys';
+import {BASE_URL} from '../Apis';
+import { useNavigation } from '@react-navigation/native';
 
 const Home = () => {
-  const getTrendyRecipes =()=>{
-    axios.get('')
-  }
+  const navigation = useNavigation();
+  const [recipes, setRecipes] = useState([]);
+
+  useEffect(() => {
+    getTrendyRecipes();
+  }, []);
+
+  // const getTrendyRecipes = () => {
+  //   axios.get(`${BASE_URL}?type=public&q=food&app_id=${APP_ID}&app_key=${APP_KEY}`)
+  //     .then(response => {
+  //       // console.log(response.data.hits);
+  //       setRecipes(response.data.hits);
+  //     })
+  //     .catch(error => {
+  //       console.log('error', error);
+  //     });
+  // };
+
+  const getTrendyRecipes = () => {
+    axios
+      .get(`${BASE_URL}?type=public&q=food&app_id=${APP_ID}&app_key=${APP_KEY}`)
+      .then(response => {
+        setRecipes(response.data.hits);
+         console.log(response.data.hits)
+      })
+      .catch(error => {
+        console.log('error', error);
+      });
+  };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle={'light-content'} />
       <View style={styles.topView}>
-        <Image source={require('../images/cooking.jpg')} style={styles.banner} />
+        <Image
+          source={require('../images/cooking.jpg')}
+          style={styles.banner}
+        />
         <View style={styles.transparentView}>
           <Text style={styles.logo}>RecipePro</Text>
           <TouchableOpacity activeOpacity={0.8} style={styles.searchBox}>
-            <Image source={require('../images/search.png')} style={styles.search} />
+            <Image
+              source={require('../images/search.png')}
+              style={styles.search}
+            />
             <Text style={styles.placeholder}>Please search here......</Text>
           </TouchableOpacity>
-          <Text style={styles.note}>Search 1000+ recipes easily With one click</Text>
+          <Text style={styles.note}>
+            Search 1000+ recipes easily With one click
+          </Text>
         </View>
       </View>
       <Text style={styles.heading}>Categories</Text>
-      <FlatList 
-        horizontal
-        showsHorizontalScrollIndicator ={false} 
-        data={MEAL_FILTERS} 
-        renderItem={({ item, index }) => (
-          <TouchableOpacity activeOpacity={.8} style={styles.categoriesItems}>
-            <View style={styles.card}>
-              <Image source={item.icon} style={styles.icon}/>
-            </View>
-            <Text style={styles.title}>{item.title}</Text>
-          </TouchableOpacity>
-        )}
-      />
+      <View>
+        <FlatList
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          data={MEAL_FILTERS}
+          renderItem={({item, index}) => (
+            <TouchableOpacity
+              activeOpacity={0.8}
+              style={styles.categoriesItems}>
+              <View style={styles.card}>
+                <Image source={item.icon} style={styles.icon} />
+              </View>
+              <Text style={styles.title}>{item.title}</Text>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
+      <Text style={styles.heading}>Trendy Recipes</Text>
+      <View>
+        <FlatList showsHorizontalScrollIndicator={false}
+          contentContainerStyle={{marginTop: 5}}
+          horizontal
+          data={recipes}
+          renderItem={({item, index}) => (
+            <TouchableOpacity style={styles.recipesitem} onPress={()=>navigation.navigate('Details',{data: item})}>
+              <Image
+                source={{uri: item.recipe.image}}
+                style={styles.recipeImage}
+              />
+              <View style={[styles.transparentView, {borderRadius: 10}]}>
+                <Text style={styles.recipelabel}>{item.recipe.label}</Text>
+              </View>
+            </TouchableOpacity>
+          )}
+        />
+      </View>
     </View>
   );
 };
@@ -101,44 +167,61 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '800',
     marginLeft: 10,
-    marginTop: 10,
+    marginTop: 20,
     color: '#000',
   },
   categoriesItems: {
     height: 120,
     width: 120,
-    marginLeft:10,
-    marginTop:10,
-    alignItems:'center',
-    justifyContent:"center",
-    alignContent:"center"
+    marginLeft: 10,
+    marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    alignContent: 'center',
   },
   card: {
     height: '70%',
     width: '80%',
-    shadowColor:'#000',
-    shadowOpacity:0.25,
-    borderRadius:3.84,
-    elevation:5,
-    backgroundColor:'white',
-    justifyContent:'center',
-    alignItems:'center',
-    margin:10,
-    borderRadius:10
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    borderRadius: 3.84,
+    elevation: 5,
+    backgroundColor: 'white',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 10,
+    borderRadius: 10,
   },
-  icon:{
-    width:'50%',
-    height:'50%',
-    tintColor:'#05b681'
+  icon: {
+    width: '50%',
+    height: '50%',
+    tintColor: '#05b681',
   },
-  title:{
-    fontSize:17,
-    alignSelf:'center',
-    margin:4,
-    fontWeight:'500',
-    color:'#000'
-    
-  }
+  title: {
+    fontSize: 17,
+    alignSelf: 'center',
+    margin: 4,
+    fontWeight: '500',
+    color: '#000',
+  },
+  recipesitem: {
+    height: 200,
+    width: 150,
+    margin: 10,
+    borderRadius: 15,
+  },
+  recipeImage: {
+    height: '100%',
+    width: '100%',
+    borderRadius: 15,
+    resizeMode: 'contain',
+  },
+  recipelabel: {
+    color: 'white',
+    fontSize: 15,
+    fontWeight: '600',
+    width: '90%',
+  },
 });
 
 export default Home;
