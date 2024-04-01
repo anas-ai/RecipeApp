@@ -112,8 +112,8 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
   },
   backBtn: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 40,
     backgroundColor: 'white',
     position: 'absolute',
     top: 8,
@@ -123,8 +123,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   backIcon: {
-    height: 20,
-    width: 20,
+    height: 10,
+    width: 10,
   },
   title: {
     fontSize: 25,
