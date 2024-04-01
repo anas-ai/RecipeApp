@@ -12,7 +12,7 @@ import {MEAL_FILTERS} from '../Data';
 import axios from 'axios';
 import {APP_ID, APP_KEY} from '../Keys';
 import {BASE_URL} from '../Apis';
-import { useNavigation } from '@react-navigation/native';
+import {useNavigation} from '@react-navigation/native';
 
 const Home = () => {
   const navigation = useNavigation();
@@ -22,23 +22,14 @@ const Home = () => {
     getTrendyRecipes();
   }, []);
 
-  // const getTrendyRecipes = () => {
-  //   axios.get(`${BASE_URL}?type=public&q=food&app_id=${APP_ID}&app_key=${APP_KEY}`)
-  //     .then(response => {
-  //       // console.log(response.data.hits);
-  //       setRecipes(response.data.hits);
-  //     })
-  //     .catch(error => {
-  //       console.log('error', error);
-  //     });
-  // };
+  
 
-  const getTrendyRecipes = () => {
-    axios
+  const getTrendyRecipes = async() => {
+    await axios
       .get(`${BASE_URL}?type=public&q=food&app_id=${APP_ID}&app_key=${APP_KEY}`)
       .then(response => {
         setRecipes(response.data.hits);
-         console.log(response.data.hits)
+        console.log(response.data.hits);
       })
       .catch(error => {
         console.log('error', error);
@@ -87,12 +78,15 @@ const Home = () => {
       </View>
       <Text style={styles.heading}>Trendy Recipes</Text>
       <View>
-        <FlatList showsHorizontalScrollIndicator={false}
+        <FlatList
+          showsHorizontalScrollIndicator={false}
           contentContainerStyle={{marginTop: 5}}
           horizontal
           data={recipes}
           renderItem={({item, index}) => (
-            <TouchableOpacity style={styles.recipesitem} onPress={()=>navigation.navigate('Details',{data: item})}>
+            <TouchableOpacity
+              style={styles.recipesitem}
+              onPress={() => navigation.navigate('Details', {data: item})}>
               <Image
                 source={{uri: item.recipe.image}}
                 style={styles.recipeImage}
